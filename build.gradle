@@ -1,0 +1,55 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+        google()
+    }
+    dependencies {
+        //classpath 'com.google.guava:guava:22.0'
+        classpath 'com.android.tools.build:gradle:3.1.2'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        google()
+    }
+}
+
+task start{
+    group "extra"
+    dependsOn "backend:appengineStart"
+}
+
+task test{
+    group "extra"
+    dependsOn "app:connectedAndroidTest"
+}
+
+task stop{
+    group "extra"
+    dependsOn "backend:appengineStop"
+}
+
+//task startTestStop{
+//    group "extra"
+//    dependsOn "backend:appengineStart"
+//    dependsOn "app:connectedAndroidTest"
+//    dependsOn "backend:appengineStop"
+//    getTasksByName('connectedAndroidTest', true).iterator().next().mustRunAfter('backend:appengineStart')
+//    getTasksByName('appengineStop', true).iterator().next().mustRunAfter('app:connectedAndroidTest')
+//}
+
+task startTestStop {
+    group "extra"
+    dependsOn "start"
+    dependsOn "test"
+    dependsOn "stop"
+    tasks.findByName("test").mustRunAfter("start")
+    tasks.findByName("stop").mustRunAfter("test")
+}
